@@ -5,6 +5,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
@@ -46,6 +47,9 @@ public class HelloController {
     @FXML
     private Button btnChooseDir;
 
+    @FXML
+    private ProgressBar progressBar;
+
     private List<File> imageFiles;
     private int currentIndex = 0;
     private Timeline timeline;
@@ -57,18 +61,16 @@ public class HelloController {
 
     @FXML
     protected void onNextButtonClick() {
-        if (currentIndex < imageFiles.size() - 1) {
-            currentIndex++;
-            showImage(imageFiles.get(currentIndex));
-        }
+        currentIndex = (currentIndex + 1) % imageFiles.size();
+        showImage(imageFiles.get(currentIndex));
+        updateProgressBar();
     }
 
     @FXML
     protected void onPrevButtonClick() {
-        if (currentIndex > 0) {
-            currentIndex--;
-            showImage(imageFiles.get(currentIndex));
-        }
+        currentIndex = (currentIndex - 1 + imageFiles.size()) % imageFiles.size();
+        showImage(imageFiles.get(currentIndex));
+        updateProgressBar();
     }
 
     @FXML
@@ -76,6 +78,7 @@ public class HelloController {
         if (!imageFiles.isEmpty()) {
             currentIndex = 0;
             showImage(imageFiles.get(currentIndex));
+            updateProgressBar();
         }
     }
 
@@ -84,12 +87,13 @@ public class HelloController {
         if (!imageFiles.isEmpty()) {
             currentIndex = imageFiles.size() - 1;
             showImage(imageFiles.get(currentIndex));
+            updateProgressBar();
         }
     }
 
     @FXML
     protected void onAutoButtonClick() {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> onNextButtonClick()));
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> onNextButtonClick()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -111,6 +115,7 @@ public class HelloController {
             if (!imageFiles.isEmpty()) {
                 currentIndex = 0;
                 showImage(imageFiles.get(currentIndex));
+                updateProgressBar();
                 btnNext.setDisable(false);
                 btnPrev.setDisable(false);
                 btnFirst.setDisable(false);
@@ -147,5 +152,14 @@ public class HelloController {
         Image image = new Image(imageFile.toURI().toString());
         imageView.setImage(image);
         welcomeText.setText("Viewing: " + imageFile.getName());
+    }
+
+    private void updateProgressBar() {
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            double progress = (double) (currentIndex + 1) / imageFiles.size();
+            progressBar.setProgress(progress);
+        } else {
+            progressBar.setProgress(0);
+        }
     }
 }
