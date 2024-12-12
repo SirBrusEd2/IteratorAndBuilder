@@ -54,6 +54,72 @@ public class HelloController {
     private int currentIndex = 0;
     private Timeline timeline;
 
+    // Геттеры для доступа к приватным полям
+    public Label getWelcomeText() {
+        return welcomeText;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public Button getBtnNext() {
+        return btnNext;
+    }
+
+    public Button getBtnPrev() {
+        return btnPrev;
+    }
+
+    public Button getBtnFirst() {
+        return btnFirst;
+    }
+
+    public Button getBtnLast() {
+        return btnLast;
+    }
+
+    public Button getBtnAuto() {
+        return btnAuto;
+    }
+
+    public Button getBtnPause() {
+        return btnPause;
+    }
+
+    public Button getBtnChooseDir() {
+        return btnChooseDir;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public List<File> getImageFiles() {
+        return imageFiles;
+    }
+
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
+    public Timeline getTimeline() {
+        return timeline;
+    }
+
+    // Сеттеры для изменения состояния
+    public void setImageFiles(List<File> imageFiles) {
+        this.imageFiles = imageFiles;
+    }
+
+    public void setCurrentIndex(int currentIndex) {
+        this.currentIndex = currentIndex;
+    }
+
+    public void setTimeline(Timeline timeline) {
+        this.timeline = timeline;
+    }
+
     @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
@@ -111,26 +177,11 @@ public class HelloController {
         File selectedDirectory = directoryChooser.showDialog(new Stage());
 
         if (selectedDirectory != null) {
-            imageFiles = loadImagesFromDirectory(selectedDirectory);
-            if (!imageFiles.isEmpty()) {
-                currentIndex = 0;
-                showImage(imageFiles.get(currentIndex));
-                updateProgressBar();
-                btnNext.setDisable(false);
-                btnPrev.setDisable(false);
-                btnFirst.setDisable(false);
-                btnLast.setDisable(false);
-                btnAuto.setDisable(false);
-                btnPause.setDisable(false);
-            } else {
-                welcomeText.setText("No images found in the selected directory.");
-                btnNext.setDisable(true);
-                btnPrev.setDisable(true);
-                btnFirst.setDisable(true);
-                btnLast.setDisable(true);
-                btnAuto.setDisable(true);
-                btnPause.setDisable(true);
-            }
+            List<File> imageFiles = loadImagesFromDirectory(selectedDirectory);
+            ImageSliderBuilder builder = new ImageSliderBuilder(this);
+            builder.setImageFiles(imageFiles);
+            builder.setCurrentIndex(0);
+            builder.build();
         }
     }
 
@@ -148,13 +199,13 @@ public class HelloController {
         return images;
     }
 
-    private void showImage(File imageFile) {
+    public void showImage(File imageFile) {
         Image image = new Image(imageFile.toURI().toString());
         imageView.setImage(image);
         welcomeText.setText("Viewing: " + imageFile.getName());
     }
 
-    private void updateProgressBar() {
+    public void updateProgressBar() {
         if (imageFiles != null && !imageFiles.isEmpty()) {
             double progress = (double) (currentIndex + 1) / imageFiles.size();
             progressBar.setProgress(progress);

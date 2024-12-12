@@ -1,0 +1,114 @@
+@startuml
+interface com.example.labs_tasks1.Builder {
+~ void setWelcomeText(String)
+~ void setImageFiles(List<File>)
+~ void setCurrentIndex(int)
+~ void setTimeline(Timeline)
+~ void setButtonsEnabled(boolean)
+~ void build()
+}
+
+interface com.example.labs_tasks1.Aggregate {
+~ Iterator getIterator()
+}
+
+class com.example.labs_tasks1.HelloController {
+- Label welcomeText
+- ImageView imageView
+- Button btnNext
+- Button btnPrev
+- Button btnFirst
+- Button btnLast
+- Button btnAuto
+- Button btnPause
+- Button btnChooseDir
+- ProgressBar progressBar
+- List<File> imageFiles
+- int currentIndex
+- Timeline timeline
++ Label getWelcomeText()
++ ImageView getImageView()
++ Button getBtnNext()
++ Button getBtnPrev()
++ Button getBtnFirst()
++ Button getBtnLast()
++ Button getBtnAuto()
++ Button getBtnPause()
++ Button getBtnChooseDir()
++ ProgressBar getProgressBar()
++ List<File> getImageFiles()
++ int getCurrentIndex()
++ Timeline getTimeline()
++ void setImageFiles(List<File>)
++ void setCurrentIndex(int)
++ void setTimeline(Timeline)
+# void onHelloButtonClick()
+# void onNextButtonClick()
+# void onPrevButtonClick()
+# void onFirstButtonClick()
+# void onLastButtonClick()
+# void onAutoButtonClick()
+# void onPauseButtonClick()
+# void onChooseDirButtonClick()
+- List<File> loadImagesFromDirectory(File)
++ void showImage(File)
++ void updateProgressBar()
+}
+
+class com.example.labs_tasks1.ImageSliderBuilder {
+- HelloController controller
+- Label welcomeText
+- ImageView imageView
+- Button btnNext
+- Button btnPrev
+- Button btnFirst
+- Button btnLast
+- Button btnAuto
+- Button btnPause
+- Button btnChooseDir
+- ProgressBar progressBar
+- List<File> imageFiles
+- int currentIndex
+- Timeline timeline
++ void setWelcomeText(String)
++ void setImageFiles(List<File>)
++ void setCurrentIndex(int)
++ void setTimeline(Timeline)
++ void setButtonsEnabled(boolean)
++ void build()
+}
+
+interface com.example.labs_tasks1.Iterator {
+~ boolean hasNext()
+~ Object next()
+}
+
+class com.example.labs_tasks1.HelloApplication {
++ void start(Stage)
++ {static} void main(String[])
+}
+
+class com.example.labs_tasks1.ConcreteAggregate {
+- String filetop
+- List<File> images
+- void loadImages(File)
++ Iterator getIterator()
+}
+
+class com.example.labs_tasks1.ConcreteAggregate$ImageIterator {
+- int current
++ boolean hasNext()
++ Object next()
+}
+
+com.example.labs_tasks1.Builder <|.. com.example.labs_tasks1.ImageSliderBuilder
+javafx.application.Application <|-- com.example.labs_tasks1.HelloApplication
+com.example.labs_tasks1.Aggregate <|.. com.example.labs_tasks1.ConcreteAggregate
+com.example.labs_tasks1.ConcreteAggregate +.. com.example.labs_tasks1.ConcreteAggregate$ImageIterator
+com.example.labs_tasks1.Iterator <|.. com.example.labs_tasks1.ConcreteAggregate$ImageIterator
+
+com.example.labs_tasks1.HelloApplication --> com.example.labs_tasks1.HelloController : uses
+com.example.labs_tasks1.HelloController --> com.example.labs_tasks1.ImageSliderBuilder : uses
+com.example.labs_tasks1.ImageSliderBuilder --> com.example.labs_tasks1.HelloController : modifies
+com.example.labs_tasks1.HelloController --> com.example.labs_tasks1.ConcreteAggregate : uses
+@enduml
